@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Calculate working Dates";
+    Layout = "_LayoutActions";
+}
+<div class="row justify-content-center m-3">
+    <div class="col-md-6 m-3 card">
+        <p class="lead row justify-content-center fs-4">Calculate working Dates</p>
+        <form asp-action="WorkDayCalculator" asp-controller="Employee" method="post">
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">Start Date :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" type="date" name="StartDate" />
+
+            </div>
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">End Date :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" type="date" name="EndDate" />
+
+            </div>
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <input type="submit" value="Calculate" class="w-100 btn btn-lg btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    
+    @if (ViewBag.Days != null)
+    {
+        <text>
+                alert("Total Working Days: @ViewBag.Days");
+        </text>
+    }
+</script>

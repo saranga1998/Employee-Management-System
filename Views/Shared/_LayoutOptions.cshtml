@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Employee Mangement System </title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EMS_Project.styles.css" asp-append-version="true" />
+    
+    
+    
+
+</head>
+@*--------------------------- This layout for the HR------------------------------------------------------------ *@
+<body>
+
+    <div class="MainContainer ">
+
+        <div class="TitleContainer shadow bg-body-tertiary rounded  border border-2">
+            <p class="fs-4 fw-bold"> HR Options</p>
+        </div>
+
+        <div class="BodyDiv">
+
+            <div class="OptionsContainer border border-end border-3 border-start-0 ">
+
+                <ul class="nav flex-column p-2 m-1 gap-3">
+
+                    <li class="btn btn-outline-secondary text-secondary-emphasis">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Back To Home</a>
+                    </li>
+
+                    <li class="nav-item dropdown btn btn-outline-secondary">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Employee Actions</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-action="AddEmployee" asp-controller="Employee">Add Employee</a></li>
+                            <li><a class="dropdown-item" asp-controller="Employee" asp-action="EmployeeDetails">Show Employees</a></li>
+                            
+                            
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown btn btn-outline-secondary">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Holiday Actions</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-action="AddHoliday" asp-controller="Holiday">Add Holiday</a></li>
+                            <li><a class="dropdown-item" asp-action="HolidayDetails" asp-controller="Holiday">Show Holidays</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+
+            </div>
+
+            <div class="ContainerView row justify-content-center">
+
+                <div class="card w-75 p-3 shadow-lg bg-body-tertiary rounded">
+                    @RenderBody()
+                </div>
+
+                
+
+
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,34 @@
+﻿@model Holiday
+
+@{
+    ViewData["Title"] = "Edit Holiday";
+    Layout = "_LayoutOptions";
+}
+
+<div class="row justify-content-center m-3">
+    <div class="col-md-8 m-3 card">
+        <p class="lead row justify-content-center fs-4">Edit Holiday</p>
+        <form asp-action="EditHoliday" asp-controller="Holiday" method="post">
+            <input asp-for="DayId" type="hidden" />
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">Select The Day :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" type="date" asp-for="Holiday1">
+                <span asp-validation-for="Holiday1" class="text-danger"></span>
+            </div>
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">Title :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" asp-for="Title" class="form-control" type="text" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <input type="submit" value="Submit" class="w-100 btn btn-lg btn-primary" />
+            </div>
+        </form>
+
+    </div>
+</div>
+

@@ -1,0 +1,60 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+
+.MainContainer{
+    width:100%;
+
+}
+.BodyDiv{
+    width:100%;
+    display:flex;
+
+}
+.TitleContainer {
+    width: 100%;
+    height: 50px;
+    background-color: #a4a772;
+    text-align: center;
+    
+}
+.TitleTxt{
+    text-align:center;
+    
+}
+
+.OptionsContainer {
+    width: 20%;
+    height: 680px;
+    padding-left: 20px;
+    background-color: #f0eefa;
+    text-align: center;
+}
+
+.ContainerView {
+    width:80%;
+    margin:0px;
+    padding :50px;
+    align-content:center;
+}
+

@@ -1,0 +1,52 @@
+﻿@model Holiday
+@{
+    ViewData["Title"] = "Add Holiday";
+    Layout = "_LayoutOptions";
+}
+
+<div class="row justify-content-center m-3">
+    <div class="col-md-8 m-3 card">
+        <p class="lead row justify-content-center fs-4">Add Holiday</p>
+        
+        <form asp-action="AddHoliday" asp-controller="Holiday" method="post">
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">Select The Day :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" type="text" id="datepicker1" asp-for="Holiday1">
+                <span asp-validation-for="Holiday1" class="text-danger"></span>
+            </div>
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <label class="input-group-text col-4 rounded-3 border border-end-0 border-3">Title :</label>
+                <input class="form-control col-4 rounded-3 border border-start-0 border-3" asp-for="Title" class="form-control" type="text" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="input-group input-group-md mb-3 col-8">
+                <input type="submit" value="Submit" class="w-100 btn btn-lg btn-primary" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+    $(function () {
+        $("#datepicker1").datepicker({
+            beforeShowDay: function (date) {
+                const day = date.getDay();
+                return [(day !== 0 && day !== 6), ''];
+            },
+            dateFormat: 'yy-mm-dd'
+        });
+
+       
+    });
+</script>
+
+

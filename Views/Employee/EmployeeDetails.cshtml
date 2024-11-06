@@ -1,0 +1,43 @@
+﻿@model List<Employee>
+@{
+    ViewData["Title"] = "All Employees";
+    Layout = "_LayoutOptions";
+}
+
+<div class="row justify-content-center m-3">
+    <p class="lead row justify-content-center fs-4">All Employee Details</p>
+    <table class="table">
+            <thead>
+                <tr class="table-danger">
+                    <td >Id</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Job</td>
+                    <td class="table-success" colspan="2"><p class="row justify-content-center">Options</p></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in Model)
+                {
+                    <tr class ="table-secondary">
+                        <td >@emp.EmployeeId</td>
+                        <td>@emp.EmployeeName</td>
+                        <td>@emp.EmployeeEmail</td>
+                        <td>@emp.EmployeeJob</td>
+
+                        <td class="table-success">
+                        <a asp-controller="Employee" asp-action="DeleteEmployee" asp-route-id="@emp.EmployeeId" class="btn btn-primary btn-sm"
+                               onclick="return confirm('Are you sure you want delete this Employee Details?')">Delete</a>
+                        </td>
+                        <td class="table-success">
+
+                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@emp.EmployeeId" class="btn btn-primary btn-sm">Edit</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    
+</div>

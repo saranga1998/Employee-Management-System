@@ -1,1 +1,29 @@
+<<<<<<< HEAD
 bin
+=======
+# Compiled binary and object files
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.sln.docstates
+.vs/
+
+
+# Packages and dependencies
+packages/
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build and publish output
+publish/
+dist/
+
+# IDE and editor-specific settings
+.vscode/
+.idea/
+.DS_Store
+>>>>>>> 1eea08c (first commit)
