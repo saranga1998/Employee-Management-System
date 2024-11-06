@@ -1,6 +1,8 @@
 ﻿using EMS_Project.Models;
 using EMS_Project.Repository.Holiday;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System.Diagnostics;
 
 namespace EMS_Project.Controllers
 {
@@ -8,12 +10,15 @@ namespace EMS_Project.Controllers
     {
         private readonly ILogger<HolidayController> _logger;
         private readonly IHolidayRepository _IholidayRepository;
+        private readonly IMemoryCache _memoryCache;
+        private readonly string key = "HolidayKey";
 
         //Injecting Services to controller
-        public HolidayController(ILogger<HolidayController> logger, IHolidayRepository holidayRepository)
+        public HolidayController(ILogger<HolidayController> logger, IHolidayRepository holidayRepository,IMemoryCache memoryCache)
         {
             _logger = logger;
             _IholidayRepository = holidayRepository;
+            _memoryCache = memoryCache;
         }
 
 
@@ -48,7 +53,27 @@ namespace EMS_Project.Controllers
         [HttpGet]
         public async Task<IActionResult> HolidayDetails()
         {
-            var Holidays = await _IholidayRepository.GetAllHolidays();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            if(_memoryCache.TryGetValue(key, out List<Holiday> Holidays))
+            {
+                _logger.Log(LogLevel.Information, "Data fetched from cache");
+            }
+            else
+            {
+                _logger.Log(LogLevel.Information, "Data not fetched from cache");
+                Holidays = await _IholidayRepository.GetAllHolidays();
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
+                    SlidingExpiration = TimeSpan.FromSeconds(45),
+                    Priority = CacheItemPriority.Normal
+                };
+                _memoryCache.Set(key, Holidays, cacheEntryOptions);
+            }
+            stopwatch.Stop();
+            _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
+            
             return View(Holidays);
         }
 
