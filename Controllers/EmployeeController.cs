@@ -1,6 +1,8 @@
 ﻿using EMS_Project.Models;
 using EMS_Project.Repository.Employee;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System.Diagnostics;
 
 namespace EMS_Project.Controllers
 {
@@ -8,12 +10,15 @@ namespace EMS_Project.Controllers
     {
         private readonly ILogger<EmployeeController> _logger;
         private readonly IEmployeeRepository _IemployeeRepository;
+        private readonly IMemoryCache _memoryCache;
+        private readonly string key = "EmployeeKey";
 
         //Injecting Services to controller
-        public EmployeeController(ILogger<EmployeeController> logger,IEmployeeRepository employeeRepository)
+        public EmployeeController(ILogger<EmployeeController> logger,IEmployeeRepository employeeRepository,IMemoryCache memoryCache)
         {
             _logger = logger;
             _IemployeeRepository = employeeRepository;
+            _memoryCache = memoryCache;
         }
 
 
@@ -48,12 +53,41 @@ namespace EMS_Project.Controllers
         [HttpGet]
         public async Task<IActionResult> EmployeeDetails()
         {
-            var Employees = await _IemployeeRepository.GetAllEmployees();
+            
+            //Data fetching message from cache or DB
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            if (_memoryCache.TryGetValue(key, out List<Employee> Employees))
+            {
+                _logger.Log(LogLevel.Information, "Data fetched from cache");
+            }
+            else
+            {
+                _logger.Log(LogLevel.Information, "Data not fetched from cache");
+                Employees = await _IemployeeRepository.GetAllEmployees();
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
+                    SlidingExpiration = TimeSpan.FromSeconds(45),
+                    Priority = CacheItemPriority.Normal
+                };
+                _memoryCache.Set(key, Employees, cacheEntryOptions);
+            }
+            stopwatch.Stop();
+            _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
+
             return View(Employees);
 
         }
 
+        //Cache Clear Method
+        public IActionResult ClearCache()
+        {
+            _memoryCache.Remove(key);
+            _logger.Log(LogLevel.Information, "Cleared cache");
+            return RedirectToAction("EmployeeDetails");
 
+        }
         //Get Method for DeleteEmployee using EmployeeId
         [HttpGet]
         public async Task<IActionResult> DeleteEmployee(string id)
