@@ -78,6 +78,14 @@ namespace EMS_Project.Controllers
             return View(Holidays);
         }
 
+        //Cache Clear Method
+        public IActionResult ClearCache()
+        {
+            _memoryCache.Remove(key);
+            _logger.Log(LogLevel.Information, "Cleared cache");
+            return RedirectToAction("HolidayDetails");
+
+        }
 
         //Delete Holiday by ID
         [HttpGet]
