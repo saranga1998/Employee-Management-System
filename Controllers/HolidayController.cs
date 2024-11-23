@@ -8,13 +8,14 @@ namespace EMS_Project.Controllers
 {
     public class HolidayController : Controller
     {
+   
         private readonly ILogger<HolidayController> _logger;
         private readonly IHolidayRepository _IholidayRepository;
         private readonly IMemoryCache _memoryCache;
         private readonly string key = "HolidayKey";
 
         //Injecting Services to controller
-        public HolidayController(ILogger<HolidayController> logger, IHolidayRepository holidayRepository,IMemoryCache memoryCache)
+        public HolidayController(ILogger<HolidayController> logger, IHolidayRepository holidayRepository, IMemoryCache memoryCache)
         {
             _logger = logger;
             _IholidayRepository = holidayRepository;
@@ -56,7 +57,7 @@ namespace EMS_Project.Controllers
             //Data fetching message from cache or DB
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            if(_memoryCache.TryGetValue(key, out List<Holiday> Holidays))
+            if (_memoryCache.TryGetValue(key, out List<Holiday> Holidays))
             {
                 _logger.Log(LogLevel.Information, "Data fetched from cache");
             }
@@ -74,7 +75,7 @@ namespace EMS_Project.Controllers
             }
             stopwatch.Stop();
             _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
-            
+
             return View(Holidays);
         }
 
@@ -105,7 +106,7 @@ namespace EMS_Project.Controllers
         public async Task<IActionResult> EditHoliday(int id)
         {
             var holiday = await _IholidayRepository.GetHolidayById(id);
-            if (holiday == null) 
+            if (holiday == null)
             {
                 return NotFound();
             }

@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 
 //------------------------------------------------------------Add Connections with Database
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+  options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
 
 //------------------------------------------------------------Add Services 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();

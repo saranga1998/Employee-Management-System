@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EMS_Project.Repository.Holiday
 {
-    public class HolidayRepository : IHolidayRepository
+    public class HolidayRepository:IHolidayRepository
     {
         private readonly AppDbContext _appDbContext;
 
@@ -38,7 +38,7 @@ namespace EMS_Project.Repository.Holiday
                 var holiday = new Models.Holiday
                 {
                     DayId = day.DayId,
-                    Holiday1  = day.Holiday1,
+                    Holiday1 = day.Holiday1,
                     Title = day.Title,
 
                 };
@@ -47,7 +47,7 @@ namespace EMS_Project.Repository.Holiday
 
             return holidays;
         }
-        
+
 
         //Delete Hoiday by ID
         public async Task<bool> DeleteHoliday(int id)
@@ -65,7 +65,7 @@ namespace EMS_Project.Repository.Holiday
             }
         }
 
-        
+
         //Get Holiday By ID
         public async Task<Models.Holiday> GetHolidayById(int id)
         {
@@ -85,7 +85,7 @@ namespace EMS_Project.Repository.Holiday
         {
             var EditHoliday = await _appDbContext.Holidays.FindAsync(holiday.DayId);
 
-            if(EditHoliday == null)
+            if (EditHoliday == null)
             {
                 return false;
             }

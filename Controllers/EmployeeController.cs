@@ -34,7 +34,7 @@ namespace EMS_Project.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEmployee(Employee newEmp)
         {
-            
+
             try
             {
                 await _IemployeeRepository.AddEmployee(newEmp);
@@ -45,7 +45,7 @@ namespace EMS_Project.Controllers
                 _logger.LogError(ex, "Error adding Employee");
             }
             return View(newEmp);
-           
+
         }
 
 
@@ -53,7 +53,7 @@ namespace EMS_Project.Controllers
         [HttpGet]
         public async Task<IActionResult> EmployeeDetails()
         {
-            
+
             //Data fetching message from cache or DB
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -112,7 +112,7 @@ namespace EMS_Project.Controllers
                 return NotFound();
             }
             return View(Employee);
-            //return View();
+
         }
 
 

@@ -20,6 +20,10 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
+    public virtual DbSet<RegistedUser> RegistedUsers { get; set; }
+
+    public virtual DbSet<User> Users { get; set; }
+
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Data Source=LEGION-5-15ACH6\\SQLEXPRESS;Initial Catalog=EMSDB;Encrypt=false;Integrated Security=True");
@@ -59,6 +63,44 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Holiday1).HasColumnName("Holiday");
             entity.Property(e => e.Title)
                 .HasMaxLength(30)
+                .IsFixedLength();
+        });
+
+        modelBuilder.Entity<RegistedUser>(entity =>
+        {
+            entity.HasKey(e => e.Userid);
+
+            entity.ToTable("RegistedUser");
+
+            entity.Property(e => e.Userid)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.ConfirmPassword)
+                .HasMaxLength(20)
+                .IsFixedLength();
+            entity.Property(e => e.Password)
+                .HasMaxLength(20)
+                .IsFixedLength();
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .IsFixedLength();
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("User");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.Email)
+                .HasMaxLength(50)
+                .IsFixedLength();
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(20)
+                .IsFixedLength();
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
                 .IsFixedLength();
         });
 

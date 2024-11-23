@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace EMS_Project.Repository.Employee
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository:IEmployeeRepository
     {
         private readonly AppDbContext _appDbContext;
 
@@ -48,12 +48,12 @@ namespace EMS_Project.Repository.Employee
             }
             return employees;
         }
-        
+
         //Delete Employee using EmployeeID
         public async Task<bool> DeleteEmployee(string id)
         {
             var Employee = await _appDbContext.Employees.FindAsync(id);
-            
+
             if (Employee == null)
             {
                 return false;
@@ -85,7 +85,7 @@ namespace EMS_Project.Repository.Employee
         public async Task<bool> UpdateEmployee(Models.Employee employee)
         {
             var EditEmployee = await _appDbContext.Employees.FindAsync(employee.EmployeeId);
-            
+
             if (EditEmployee == null)
             {
                 return false;
@@ -108,9 +108,9 @@ namespace EMS_Project.Repository.Employee
 
             int workingDays = 0;
 
-            if (startDate < endDate) 
+            if (startDate < endDate)
             {
-                for(var date = startDate; date <= endDate; date = date.AddDays(1))
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
                     if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || Hoildays.Contains(date))
                     {
