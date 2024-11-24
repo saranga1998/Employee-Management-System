@@ -1,4 +1,5 @@
 ﻿using EMS_Project.Models;
+using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.UserRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,15 +8,16 @@ namespace EMS_Project.Controllers
     public class AuthenticationController : Controller
     {
         private readonly IUserRepository _userRepository;
-
-        public AuthenticationController(IUserRepository userRepository)
+        private readonly IPasswordHash _passwordHash;
+        public AuthenticationController(IUserRepository userRepository,IPasswordHash passwordHash)
         {
             _userRepository = userRepository;
+            _passwordHash = passwordHash;
         }
 
 
         [HttpPost]
-        public IActionResult RegisterUser(RegistedUser registedUser)
+        public async Task<IActionResult> RegisterUser(RegistedUser registedUser)
         {
             if (ModelState.IsValid) 
             { 
@@ -26,6 +28,14 @@ namespace EMS_Project.Controllers
             {
                 return BadRequest();
             }
+
+            User ExisitingUserByName = await _userRepository.GetByUsername(registedUser.Username);
+            if (ExisitingUserByName != null)
+            {
+                return Conflict();
+            }
+
+            string Passwordhash =  _passwordHash.Hash(registedUser.Password);
 
             return View();
         }

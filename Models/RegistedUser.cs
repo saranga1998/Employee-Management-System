@@ -5,7 +5,7 @@ namespace EMS_Project.Models;
 
 public partial class RegistedUser
 {
-    public string Userid { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
     public string Username { get; set; } = null!;
 

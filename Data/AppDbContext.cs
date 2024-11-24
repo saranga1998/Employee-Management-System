@@ -68,11 +68,11 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<RegistedUser>(entity =>
         {
-            entity.HasKey(e => e.Userid);
+            entity.HasKey(e => e.Email);
 
             entity.ToTable("RegistedUser");
 
-            entity.Property(e => e.Userid)
+            entity.Property(e => e.Email)
                 .HasMaxLength(10)
                 .IsFixedLength();
             entity.Property(e => e.ConfirmPassword)
