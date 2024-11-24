@@ -1,6 +1,7 @@
 using EMS_Project.Data;
 using EMS_Project.Repository.Employee;
 using EMS_Project.Repository.Holiday;
+using EMS_Project.Repository.PasswordHasherRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //------------------------------------------------------------Add Services 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IHolidayRepository,HolidayRepository>();
+builder.Services.AddSingleton<IPasswordHash,PasswordHash>();
 //------------------------------------------------------------End Services
 
 var app = builder.Build();
