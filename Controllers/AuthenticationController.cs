@@ -35,8 +35,14 @@ namespace EMS_Project.Controllers
                 return Conflict();
             }
 
-            string Passwordhash =  _passwordHash.Hash(registedUser.Password);
+            User ExisitingUserByEmail = await _userRepository.GetByEmail(registedUser.Email);
+            if (ExisitingUserByEmail != null)
+            {
+                return Conflict();
+            }
 
+            string Passwordhash =  _passwordHash.Hash(registedUser.Password);
+            await _userRepository.AddUser(registedUser, Passwordhash);
             return View();
         }
     }
