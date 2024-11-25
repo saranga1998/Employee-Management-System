@@ -4,9 +4,9 @@ namespace EMS_Project.Repository.UserRepository
 {
     public interface IUserRepository
     {
-        Task<User> GetByEmail(string email);
+        Task<bool> GetByEmail(string email);
 
-        Task<User> GetByUsername(string username);
+        Task<bool> GetByUsername(string username);
 
         Task AddUser(RegistedUser registedUser,string HashPW);
     }

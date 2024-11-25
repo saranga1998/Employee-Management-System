@@ -1,6 +1,7 @@
 ﻿using EMS_Project.Models;
 using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.UserRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EMS_Project.Controllers
@@ -17,33 +18,42 @@ namespace EMS_Project.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(RegistedUser registedUser)
+        public async Task<IActionResult> RegisterUser([FromBody]RegistedUser registedUser)
         {
+            string Passwordhash = _passwordHash.Hash(registedUser.Password);
             if (ModelState.IsValid) 
             { 
-                return BadRequest();
+                IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
+                return BadRequest(errorMessages);
             }
+            
 
-            if (registedUser.Password != registedUser.ConfirmPassword)
-            {
-                return BadRequest();
-            }
+            //if (registedUser.Password != registedUser.ConfirmPassword)
+            //{
+            //    return BadRequest(new ErrorViewModel("Password Not matched"));
+            //}
+            
+                
+            //bool ExisitingUserByName = await _userRepository.GetByUsername(registedUser.Username);
+            bool ExisitingUserByEmail = await _userRepository.GetByEmail(registedUser.Email);
 
-            User ExisitingUserByName = await _userRepository.GetByUsername(registedUser.Username);
-            if (ExisitingUserByName != null)
-            {
-                return Conflict();
-            }
+                //if (ExisitingUserByName != true)
+                //{
+                //    return Conflict(new ErrorViewModel("Username is Exisit"));
+                //}
 
-            User ExisitingUserByEmail = await _userRepository.GetByEmail(registedUser.Email);
-            if (ExisitingUserByEmail != null)
-            {
-                return Conflict();
-            }
 
-            string Passwordhash =  _passwordHash.Hash(registedUser.Password);
-            await _userRepository.AddUser(registedUser, Passwordhash);
-            return View();
+                //if (ExisitingUserByEmail != true)
+                //{
+                //    return Conflict(new ErrorViewModel("Email is Exisit"));
+                //}
+
+                
+                await _userRepository.AddUser(registedUser, Passwordhash);
+                return Ok();
+           
+
+            
         }
     }
 }
