@@ -1,5 +1,6 @@
 ﻿using EMS_Project.Data;
 using EMS_Project.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EMS_Project.Repository.UserRepository
 {
@@ -23,14 +24,27 @@ namespace EMS_Project.Repository.UserRepository
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<User> GetByEmail(string email)
-        {
-            return await Task.FromResult(await _appDbContext.Users.FindAsync(keyValues: email));
+        public async Task<bool> GetByEmail(string email)
+        {           
+            var IsemailExisit = await _appDbContext.Users.AnyAsync(e => e.Email == email);
+
+            return IsemailExisit;
         }
 
-        public async Task<User> GetByUsername(string username)
+        public async Task<bool> GetByUsername(string username)
         {
-            return await Task.FromResult(await _appDbContext.Users.FindAsync(keyValues: username));
+            bool IsUsernameExisit = true;
+            var Username = await _appDbContext.Users.FindAsync(username);
+            if (Username.Username != username)
+            {
+                IsUsernameExisit = true;
+            }
+            else
+            {
+                IsUsernameExisit = false;
+            }
+            return IsUsernameExisit;
+            
         }
     }
 }
