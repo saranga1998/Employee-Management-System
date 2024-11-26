@@ -1,5 +1,6 @@
 ﻿using EMS_Project.Data;
 using EMS_Project.Models;
+using EMS_Project.ViewModels.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace EMS_Project.Repository.UserRepository
@@ -12,12 +13,13 @@ namespace EMS_Project.Repository.UserRepository
         { 
             _appDbContext = appDbContext;
         }
-        public async Task AddUser(RegistedUser registedUser, string HashPW)
+        public async Task AddUser(RequsetViewModel requset, string HashPW)
         {
             var NewUser = new User
             {
-                Email = registedUser.Email,
-                Username = registedUser.Username,
+                Id = Guid.NewGuid().ToString(),
+                Email = requset.Email,
+                Username = requset.Username,
                 PasswordHash = HashPW
             };
             await _appDbContext.Users.AddAsync(NewUser);
@@ -26,25 +28,12 @@ namespace EMS_Project.Repository.UserRepository
 
         public async Task<bool> GetByEmail(string email)
         {           
-            var IsemailExisit = await _appDbContext.Users.AnyAsync(e => e.Email == email);
-
-            return IsemailExisit;
+             return await _appDbContext.Users.AnyAsync(e => e.Email == email);    
         }
 
         public async Task<bool> GetByUsername(string username)
         {
-            bool IsUsernameExisit = true;
-            var Username = await _appDbContext.Users.FindAsync(username);
-            if (Username.Username != username)
-            {
-                IsUsernameExisit = true;
-            }
-            else
-            {
-                IsUsernameExisit = false;
-            }
-            return IsUsernameExisit;
-            
+            return await _appDbContext.Users.AnyAsync(e => e.Username == username);   
         }
     }
 }

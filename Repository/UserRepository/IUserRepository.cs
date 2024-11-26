@@ -1,4 +1,5 @@
 ﻿using EMS_Project.Models;
+using EMS_Project.ViewModels.Requests;
 
 namespace EMS_Project.Repository.UserRepository
 {
@@ -8,6 +9,6 @@ namespace EMS_Project.Repository.UserRepository
 
         Task<bool> GetByUsername(string username);
 
-        Task AddUser(RegistedUser registedUser,string HashPW);
+        Task AddUser(RequsetViewModel requset,string HashPW);
     }
 }
