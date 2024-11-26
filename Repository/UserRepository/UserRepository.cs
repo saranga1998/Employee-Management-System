@@ -50,6 +50,10 @@ namespace EMS_Project.Repository.UserRepository
             }
         }
 
-        
+        public async Task<User?> GetUserDetails(string username)
+        {
+           User user = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Username == username);
+            return user;
+        }
     }
 }

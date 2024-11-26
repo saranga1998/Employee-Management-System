@@ -2,6 +2,7 @@ using EMS_Project.Data;
 using EMS_Project.Repository.Employee;
 using EMS_Project.Repository.Holiday;
 using EMS_Project.Repository.PasswordHasherRepository;
+using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.UserRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IHolidayRepository,HolidayRepository>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddSingleton<IPasswordHash,PasswordHash>();
+builder.Services.AddSingleton<TokenGenerator>();
 //------------------------------------------------------------End Services
 
 var app = builder.Build();

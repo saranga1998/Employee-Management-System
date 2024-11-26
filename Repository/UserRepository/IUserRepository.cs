@@ -9,6 +9,8 @@ namespace EMS_Project.Repository.UserRepository
 
         Task<bool> GetByUsername(string username);
 
+        Task<User?> GetUserDetails(string username);
+
         Task AddUser(RequsetViewModel requset,string HashPW);
     }
 }
