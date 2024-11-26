@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using EMS_Project.Models;
 using EMS_Project.Repository.PasswordHasherRepository;
+using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -12,10 +13,12 @@ namespace EMS_Project.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHash;
-        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash)
+        private readonly TokenGenerator _tokenGenerator;
+        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash,TokenGenerator tokenGenerator)
         {
             _userRepository = userRepository;
             _passwordHash = passwordHash;
+            _tokenGenerator = tokenGenerator;
         }
 
         //User Registration
@@ -58,7 +61,7 @@ namespace EMS_Project.Controllers
 
         //User Login
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody]RequsetViewModel login) 
+        public async Task<IActionResult> Login([FromBody]LoginRequset login) 
         {
             if (!ModelState.IsValid)
             {
@@ -66,12 +69,31 @@ namespace EMS_Project.Controllers
             }
 
             bool existingUserByName = await _userRepository.GetByUsername(login.Username);
-            if (existingUserByName)
+            if (!existingUserByName)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorViewModel(errorMessage :"Username is not exists"));
             }
 
-            return Ok("Login is successfull");
+            User? user = await _userRepository.GetUserDetails(login.Username);
+            if (user == null)
+            {
+                return Unauthorized(new ErrorViewModel(errorMessage: "User details could not be retrieved"));
+            }
+
+            bool isCorrectPassword = _passwordHash.VerifyPassword(login.Password,user.PasswordHash);
+
+            if (!isCorrectPassword)
+            {
+                return Unauthorized(new ErrorViewModel(errorMessage: "Invalid password"));
+            }
+
+            string accessToken = _tokenGenerator.CreateToken(user);
+
+            return Ok(new AuthenticatedUserResponse()
+                {
+                    AccessToken = accessToken
+                }
+            );
         }
 
         //Bad Request Method
