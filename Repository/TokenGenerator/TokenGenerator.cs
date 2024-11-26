@@ -1,4 +1,5 @@
 ﻿using EMS_Project.Models;
+using EMS_Project.ViewModels.Requests;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,9 +9,15 @@ namespace EMS_Project.Repository.TokenGenerator
 {
     public class TokenGenerator
     {
+        private readonly AuthenticationConfiguration configuration;
+
+        public TokenGenerator(AuthenticationConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
         public string CreateToken(User user)
         {
-            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("12Ei5SePg1urP_9WSagKaAqorU3f6-cf1AT1rLp81luzdn88Px6aR7WYoxYWH1EUePWGQxsm1r78mgbYMgoPwpVMTh62Y8Uaf7g_ucXi_s3vKFfS1paVQlz39HtFptFAGNiMoP7CXd6_pTTk36IkZMbjWkrxzPIhsTmJ6koqp4k"));
+            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.AccessTokenSecret));
 
             SigningCredentials credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
 
@@ -22,11 +29,11 @@ namespace EMS_Project.Repository.TokenGenerator
             };
 
             JwtSecurityToken token = new JwtSecurityToken(
-                "http://localhost:5278",
-                "http://localhost:5278",
+                configuration.Issuer,
+                configuration.Audience,
                 claims,
                 DateTime.UtcNow,
-                DateTime.UtcNow.AddMinutes(30),
+                DateTime.UtcNow.AddMinutes(configuration.AccessTokenExpirationMinutes),
                 credentials
 
                 );

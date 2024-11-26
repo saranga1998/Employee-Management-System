@@ -4,13 +4,19 @@ using EMS_Project.Repository.Holiday;
 using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.UserRepository;
+using EMS_Project.ViewModels.Requests;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
+ 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Bind the "Authentication" section to a strongly-typed object
+var AuthenticationConfiguration = new AuthenticationConfiguration();
+builder.Configuration.Bind("Authentication", AuthenticationConfiguration);
+builder.Services.AddSingleton(AuthenticationConfiguration);
 //------------------------------------------------------------Add Connections with Database
 builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
@@ -18,7 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //------------------------------------------------------------Add Services 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IHolidayRepository,HolidayRepository>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddSingleton<IUserRepository,UserRepository>();
 builder.Services.AddSingleton<IPasswordHash,PasswordHash>();
 builder.Services.AddSingleton<TokenGenerator>();
 //------------------------------------------------------------End Services
@@ -38,6 +44,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

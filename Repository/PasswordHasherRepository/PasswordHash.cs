@@ -11,7 +11,7 @@ namespace EMS_Project.Repository.PasswordHasherRepository
 
         public bool VerifyPassword(string password, string passwordHash)
         {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            return BCrypt.Net.BCrypt.Verify(password, passwordHash);    
         }
     }
 }
