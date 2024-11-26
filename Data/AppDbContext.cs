@@ -20,8 +20,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
-    public virtual DbSet<RegistedUser> RegistedUsers { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -66,26 +64,6 @@ public partial class AppDbContext : DbContext
                 .IsFixedLength();
         });
 
-        modelBuilder.Entity<RegistedUser>(entity =>
-        {
-            entity.HasKey(e => e.Email);
-
-            entity.ToTable("RegistedUser");
-
-            entity.Property(e => e.Email)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.ConfirmPassword)
-                .HasMaxLength(20)
-                .IsFixedLength();
-            entity.Property(e => e.Password)
-                .HasMaxLength(20)
-                .IsFixedLength();
-            entity.Property(e => e.Username)
-                .HasMaxLength(50)
-                .IsFixedLength();
-        });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("User");
@@ -97,7 +75,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(50)
                 .IsFixedLength();
             entity.Property(e => e.PasswordHash)
-                .HasMaxLength(20)
+                .HasMaxLength(150)
                 .IsFixedLength();
             entity.Property(e => e.Username)
                 .HasMaxLength(50)

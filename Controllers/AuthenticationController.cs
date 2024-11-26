@@ -1,4 +1,5 @@
-﻿using EMS_Project.Models;
+﻿using Azure.Core;
+using EMS_Project.Models;
 using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
@@ -11,15 +12,15 @@ namespace EMS_Project.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHash;
-        public AuthenticationController(IUserRepository userRepository,IPasswordHash passwordHash)
+        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash)
         {
             _userRepository = userRepository;
             _passwordHash = passwordHash;
         }
 
-
+        //User Registration
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(RequsetViewModel request)
+        public async Task<IActionResult> RegisterUser([FromBody] RequsetViewModel request)
         {
             if (request == null)
             {
@@ -28,9 +29,7 @@ namespace EMS_Project.Controllers
 
             if (!ModelState.IsValid)
             {
-                IEnumerable<string> errorMessages = ModelState.Values
-                    .SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
-                return BadRequest(errorMessages);
+                return BadRequestModelState();
             }
 
 
@@ -38,6 +37,7 @@ namespace EMS_Project.Controllers
             {
                 return BadRequest(new ErrorViewModel("Passwords do not match"));
             }
+
             bool existingUserByName = await _userRepository.GetByUsername(request.Username);
             if (existingUserByName)
             {
@@ -53,7 +53,33 @@ namespace EMS_Project.Controllers
             string Passwordhash = _passwordHash.Hash(request.Password);
             await _userRepository.AddUser(request, Passwordhash);
             return Ok("Registration successful");
-               
+
+        }
+
+        //User Login
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody]RequsetViewModel login) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequestModelState();
+            }
+
+            bool existingUserByName = await _userRepository.GetByUsername(login.Username);
+            if (existingUserByName)
+            {
+                return Unauthorized();
+            }
+
+            return Ok("Login is successfull");
+        }
+
+        //Bad Request Method
+        private IActionResult BadRequestModelState()
+        {
+            IEnumerable<string> errorMessages = ModelState.Values
+                    .SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
+            return BadRequest(errorMessages);
         }
     }
 }
