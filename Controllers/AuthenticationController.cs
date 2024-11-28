@@ -2,6 +2,7 @@
 using EMS_Project.Models;
 using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.TokenGenerator;
+using EMS_Project.Repository.TokenValidator;
 using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -15,13 +16,15 @@ namespace EMS_Project.Controllers
         private readonly IPasswordHash _passwordHash;
         private readonly AccessTokenGenerator _accessTokenGenerator;
         private readonly RefreshTokenGenerator _refreshTokenGenerator;
+        private readonly RefreshTokenValidator _refreshTokenValidator;
         public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash,
-            AccessTokenGenerator accessToken,RefreshTokenGenerator refreshToken)
+            AccessTokenGenerator accessToken,RefreshTokenGenerator refreshToken,RefreshTokenValidator refreshTokenValidator)
         {
             _userRepository = userRepository;
             _passwordHash = passwordHash;
             _accessTokenGenerator = accessToken;
             _refreshTokenGenerator = refreshToken;
+            _refreshTokenValidator = refreshTokenValidator;
         }
 
         //User Registration
@@ -99,6 +102,23 @@ namespace EMS_Project.Controllers
                     RefreshToken = refreshToken
             }
             );
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest refresh)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequestModelState();
+            }
+
+            bool IsValidateToken = _refreshTokenValidator.Validate(refresh.RefreshToken);
+            if (!IsValidateToken)
+            {
+                return BadRequest(new ErrorViewModel(errorMessage: "Invalid Refresh Token"));
+            }
+
+            return Ok();
         }
 
         //Bad Request Method

@@ -3,6 +3,7 @@ using EMS_Project.Repository.Employee;
 using EMS_Project.Repository.Holiday;
 using EMS_Project.Repository.PasswordHasherRepository;
 using EMS_Project.Repository.TokenGenerator;
+using EMS_Project.Repository.TokenValidator;
 using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,14 +14,17 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
  
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 
 //------------------------------------------------------------Add Connections with Database
+
 builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
 
 // Bind the "Authentication" section to a strongly-typed object
+
 var AuthenticationConfiguration = new AuthenticationConfiguration();
 builder.Configuration.Bind("Authentication", AuthenticationConfiguration);
 builder.Services.AddSingleton(AuthenticationConfiguration);
@@ -50,7 +54,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
 //------------------------------------------------------------Add Services 
+
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IHolidayRepository,HolidayRepository>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
@@ -58,6 +64,8 @@ builder.Services.AddScoped<IPasswordHash,PasswordHash>();
 builder.Services.AddSingleton<TokenGenerator>();
 builder.Services.AddSingleton<AccessTokenGenerator>();
 builder.Services.AddSingleton<RefreshTokenGenerator>();
+builder.Services.AddSingleton<RefreshTokenValidator>();
+
 //------------------------------------------------------------End Services
 
 var app = builder.Build();
