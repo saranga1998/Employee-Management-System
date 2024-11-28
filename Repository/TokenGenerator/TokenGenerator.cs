@@ -15,25 +15,20 @@ namespace EMS_Project.Repository.TokenGenerator
         {
             this.configuration = configuration;
         }
-        public string CreateToken(User user)
+        public string CreateToken(string SecrutKey,string issuer,string audience,int ExpMin,IEnumerable<Claim> claims = null)
         {
-            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.AccessTokenSecret));
+            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecrutKey));
 
             SigningCredentials credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
 
-            List<Claim> claims = new List<Claim>()
-            {
-                new Claim("id",user.Id.ToString()),
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Name,user.Username)
-            };
+            
 
             JwtSecurityToken token = new JwtSecurityToken(
                 configuration.Issuer,
                 configuration.Audience,
                 claims,
                 DateTime.UtcNow,
-                DateTime.UtcNow.AddMinutes(configuration.AccessTokenExpirationMinutes),
+                DateTime.UtcNow.AddMinutes(ExpMin),
                 credentials
 
                 );

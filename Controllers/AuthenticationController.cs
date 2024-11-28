@@ -13,12 +13,15 @@ namespace EMS_Project.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHash;
-        private readonly TokenGenerator _tokenGenerator;
-        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash,TokenGenerator tokenGenerator)
+        private readonly AccessTokenGenerator _accessTokenGenerator;
+        private readonly RefreshTokenGenerator _refreshTokenGenerator;
+        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash,
+            AccessTokenGenerator accessToken,RefreshTokenGenerator refreshToken)
         {
             _userRepository = userRepository;
             _passwordHash = passwordHash;
-            _tokenGenerator = tokenGenerator;
+            _accessTokenGenerator = accessToken;
+            _refreshTokenGenerator = refreshToken;
         }
 
         //User Registration
@@ -87,12 +90,14 @@ namespace EMS_Project.Controllers
                 return Unauthorized(new ErrorViewModel(errorMessage: "Invalid password"));
             }
 
-            string accessToken = _tokenGenerator.CreateToken(user);
+            string accessToken = _accessTokenGenerator.CreateAccessToken(user);
+            string refreshToken = _refreshTokenGenerator.CreateRefreshToken();
 
             return Ok(new AuthenticatedUserResponse()
                 {
-                    AccessToken = accessToken
-                }
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+            }
             );
         }
 
