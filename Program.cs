@@ -1,7 +1,9 @@
 using EMS_Project.Data;
+using EMS_Project.Repository.Authenticators;
 using EMS_Project.Repository.Employee;
 using EMS_Project.Repository.Holiday;
 using EMS_Project.Repository.PasswordHasherRepository;
+using EMS_Project.Repository.RefreshTokenRepository;
 using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.TokenValidator;
 using EMS_Project.Repository.UserRepository;
@@ -61,6 +63,9 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IHolidayRepository,HolidayRepository>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IPasswordHash,PasswordHash>();
+builder.Services.AddScoped<IRefreshToken, RefreshTokenRepo>();
+builder.Services.AddScoped<Authenticator>();
+
 builder.Services.AddSingleton<TokenGenerator>();
 builder.Services.AddSingleton<AccessTokenGenerator>();
 builder.Services.AddSingleton<RefreshTokenGenerator>();

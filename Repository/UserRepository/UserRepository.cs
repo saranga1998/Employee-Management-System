@@ -55,5 +55,10 @@ namespace EMS_Project.Repository.UserRepository
            User user = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Username == username);
             return user;
         }
+
+        public async Task<User?> GetbyUserId(string userId)
+        {
+            return await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        }
     }
 }

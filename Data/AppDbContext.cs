@@ -20,6 +20,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Holiday> Holidays { get; set; }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,6 +64,21 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(30)
                 .IsFixedLength();
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.TokenId);
+
+            entity.ToTable("RefreshToken");
+
+            entity.Property(e => e.TokenId)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.Id)
+                .HasMaxLength(10)
+                .IsFixedLength();
+            entity.Property(e => e.Token).HasColumnType("text");
         });
 
         modelBuilder.Entity<User>(entity =>
