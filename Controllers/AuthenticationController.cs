@@ -1,6 +1,8 @@
 ﻿using Azure.Core;
 using EMS_Project.Models;
+using EMS_Project.Repository.Authenticators;
 using EMS_Project.Repository.PasswordHasherRepository;
+using EMS_Project.Repository.RefreshTokenRepository;
 using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.TokenValidator;
 using EMS_Project.Repository.UserRepository;
@@ -14,18 +16,19 @@ namespace EMS_Project.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHash;
-        private readonly AccessTokenGenerator _accessTokenGenerator;
-        private readonly RefreshTokenGenerator _refreshTokenGenerator;
+        private readonly IRefreshToken _refreshToken;
+        private readonly Authenticator _authenticator;
         private readonly RefreshTokenValidator _refreshTokenValidator;
-        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash,
-            AccessTokenGenerator accessToken,RefreshTokenGenerator refreshToken,RefreshTokenValidator refreshTokenValidator)
+
+        public AuthenticationController(IUserRepository userRepository, IPasswordHash passwordHash, IRefreshToken refreshToken, Authenticator authenticator, RefreshTokenValidator refreshTokenValidator)
         {
             _userRepository = userRepository;
             _passwordHash = passwordHash;
-            _accessTokenGenerator = accessToken;
-            _refreshTokenGenerator = refreshToken;
+            _refreshToken = refreshToken;
+            _authenticator = authenticator;
             _refreshTokenValidator = refreshTokenValidator;
         }
+
 
         //User Registration
         [HttpPost]
@@ -91,21 +94,14 @@ namespace EMS_Project.Controllers
             if (!isCorrectPassword)
             {
                 return Unauthorized(new ErrorViewModel(errorMessage: "Invalid password"));
-            }
+            }           
 
-            string accessToken = _accessTokenGenerator.CreateAccessToken(user);
-            string refreshToken = _refreshTokenGenerator.CreateRefreshToken();
-
-            return Ok(new AuthenticatedUserResponse()
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken
-            }
-            );
+            AuthenticatedUserResponse response = await _authenticator.Authenticate(user);
+            return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Refresh([FromBody] RefreshRequest refresh)
+        public async Task<IActionResult> Refresh([FromBody]RefreshRequest refresh)
         {
             if (!ModelState.IsValid)
             {
@@ -118,7 +114,24 @@ namespace EMS_Project.Controllers
                 return BadRequest(new ErrorViewModel(errorMessage: "Invalid Refresh Token"));
             }
 
-            return Ok();
+            RefreshToken refreshToken = await _refreshToken.GetByToken(refresh.RefreshToken);
+            if (refreshToken == null)
+            {
+                return NotFound(new ErrorViewModel(errorMessage: "Refresh Token not found"));
+            }
+
+            await _refreshToken.DeleteToken(refreshToken.TokenId);
+
+            User user = await _userRepository.GetbyUserId(refreshToken.Id);
+
+            if (user == null)
+            {
+                return NotFound(new ErrorViewModel(errorMessage: "User Not Found"));
+            }
+
+
+            AuthenticatedUserResponse response = await _authenticator.Authenticate(user);
+            return Ok(response);
         }
 
         //Bad Request Method
