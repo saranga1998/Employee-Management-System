@@ -9,5 +9,7 @@ namespace EMS_Project.Repository.RefreshTokenRepository
         Task<RefreshToken?> GetByToken(string Rtoken);
 
         Task DeleteToken(string TokenId);
+
+        Task DeleteAllToken(string id);
     }
 }
