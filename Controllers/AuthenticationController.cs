@@ -7,8 +7,10 @@ using EMS_Project.Repository.TokenGenerator;
 using EMS_Project.Repository.TokenValidator;
 using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EMS_Project.Controllers
 {
@@ -70,7 +72,7 @@ namespace EMS_Project.Controllers
 
         //User Login
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody]LoginRequset login) 
+        public async Task<IActionResult> Login([FromBody] LoginRequset login)
         {
             if (!ModelState.IsValid)
             {
@@ -80,7 +82,7 @@ namespace EMS_Project.Controllers
             bool existingUserByName = await _userRepository.GetByUsername(login.Username);
             if (!existingUserByName)
             {
-                return Unauthorized(new ErrorViewModel(errorMessage :"Username is not exists"));
+                return Unauthorized(new ErrorViewModel(errorMessage: "Username is not exists"));
             }
 
             User? user = await _userRepository.GetUserDetails(login.Username);
@@ -89,19 +91,20 @@ namespace EMS_Project.Controllers
                 return Unauthorized(new ErrorViewModel(errorMessage: "User details could not be retrieved"));
             }
 
-            bool isCorrectPassword = _passwordHash.VerifyPassword(login.Password,user.PasswordHash);
+            bool isCorrectPassword = _passwordHash.VerifyPassword(login.Password, user.PasswordHash);
 
             if (!isCorrectPassword)
             {
                 return Unauthorized(new ErrorViewModel(errorMessage: "Invalid password"));
-            }           
+            }
 
             AuthenticatedUserResponse response = await _authenticator.Authenticate(user);
             return Ok(response);
         }
 
+        //Refresh
         [HttpPost]
-        public async Task<IActionResult> Refresh([FromBody]RefreshRequest refresh)
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest refresh)
         {
             if (!ModelState.IsValid)
             {
@@ -133,6 +136,25 @@ namespace EMS_Project.Controllers
             AuthenticatedUserResponse response = await _authenticator.Authenticate(user);
             return Ok(response);
         }
+
+
+        //Logout
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> Logout()
+        {
+            string RawUserId = HttpContext.User.FindFirstValue("id");
+
+            //if(!Guid.TryParse(RawUserId,out Guid userID))
+            //{
+            //    return Unauthorized();
+            //}
+            await _refreshToken.DeleteAllToken(RawUserId);
+
+            return NoContent();
+
+        }
+
 
         //Bad Request Method
         private IActionResult BadRequestModelState()

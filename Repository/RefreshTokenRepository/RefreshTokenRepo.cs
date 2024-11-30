@@ -33,6 +33,21 @@ namespace EMS_Project.Repository.RefreshTokenRepository
             }
         }
 
+        public async Task DeleteAllToken(string id)
+        {
+            // Fetch all tokens for the given user ID
+            var tokens = await _appDbContext.RefreshTokens
+                                            .Where(t => t.Id == id)
+                                            .ToListAsync();
+
+            // Check if there are tokens to delete
+            if (tokens.Any())
+            {
+                _appDbContext.RefreshTokens.RemoveRange(tokens);
+                await _appDbContext.SaveChangesAsync();
+            }
+        }
+
         public async Task DeleteToken(string TokenId)
         {
             var refreshToken = await _appDbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenId == TokenId);
