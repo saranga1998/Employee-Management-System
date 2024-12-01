@@ -1,11 +1,14 @@
 ﻿using EMS_Project.Models;
 using EMS_Project.Repository.Holiday;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace EMS_Project.Controllers
 {
+    //[Authorize]
     public class HolidayController : Controller
     {
    
@@ -24,9 +27,13 @@ namespace EMS_Project.Controllers
 
 
         //Add Holiday Get Method
+        [Authorize]
         [HttpGet]
         public IActionResult AddHoliday()
         {
+            string Id = HttpContext.User.FindFirstValue("id");
+            string Email = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            string UserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             return View();
         }
 

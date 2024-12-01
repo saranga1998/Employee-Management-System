@@ -1,11 +1,13 @@
 ﻿using EMS_Project.Models;
 using EMS_Project.Repository.Employee;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 
 namespace EMS_Project.Controllers
 {
+    
     public class EmployeeController : Controller
     {
         private readonly ILogger<EmployeeController> _logger;
