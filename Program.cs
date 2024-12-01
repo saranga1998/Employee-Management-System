@@ -1,4 +1,5 @@
 using EMS_Project.Data;
+using EMS_Project.Models;
 using EMS_Project.Repository.Authenticators;
 using EMS_Project.Repository.Employee;
 using EMS_Project.Repository.Holiday;
@@ -12,13 +13,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
  
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
-
+//builder.Services.AddIdentityCore<User>();
 
 //------------------------------------------------------------Add Connections with Database
 
@@ -53,9 +55,32 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                context.HandleResponse(); // Prevent default behavior
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new { message = "Token is invalid or expired." });
+                return context.Response.WriteAsync(result);
+            },
+            OnMessageReceived = context =>
+            {
+                // Optionally handle tokens sent via query strings or cookies
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                // Custom actions after token validation, if needed
+                return Task.CompletedTask;
             }
         };
     });
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+//});
 
 //------------------------------------------------------------Add Services 
 

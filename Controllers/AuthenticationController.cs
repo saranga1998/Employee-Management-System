@@ -9,6 +9,7 @@ using EMS_Project.Repository.UserRepository;
 using EMS_Project.ViewModels.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -16,6 +17,7 @@ namespace EMS_Project.Controllers
 {
     public class AuthenticationController : Controller
     {
+        //private readonly UserManager<User> userManager;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHash;
         private readonly IRefreshToken _refreshToken;

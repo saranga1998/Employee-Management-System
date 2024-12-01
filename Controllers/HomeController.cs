@@ -30,7 +30,7 @@ namespace EMS_Project.Controllers
         [HttpGet]
         public IActionResult Test() 
         {
-            string Id = HttpContext.User.FindFirstValue("Id");
+            string Id = HttpContext.User.FindFirstValue("id");
             string Email = HttpContext.User.FindFirstValue(ClaimTypes.Email);
             string UserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             return Ok();
