@@ -22,6 +22,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //builder.Services.AddIdentityCore<User>();
 
+//Add CORs 
+//------------------------------------------------------------Cros Orgin Resource Sharing
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactAppPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // React app's URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 //------------------------------------------------------------Add Connections with Database
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -100,6 +112,7 @@ builder.Services.AddSingleton<RefreshTokenValidator>();
 
 var app = builder.Build();
 
+app.UseCors("ReactAppPolicy");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
