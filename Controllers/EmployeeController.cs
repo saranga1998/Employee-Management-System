@@ -52,35 +52,71 @@ namespace EMS_Project.Controllers
 
 
         //Get Method for EmployeeDetails
+        //[HttpGet]
+        //public async Task<IActionResult> EmployeeDetails()
+        //{
+
+        //    //Data fetching message from cache or DB
+        //    var stopwatch = new Stopwatch();
+        //    stopwatch.Start();
+        //    if (_memoryCache.TryGetValue(key, out List<Employee> Employees))
+        //    {
+        //        _logger.Log(LogLevel.Information, "Data fetched from cache");
+        //    }
+        //    else
+        //    {
+        //        _logger.Log(LogLevel.Information, "Data not fetched from cache");
+        //        Employees = await _IemployeeRepository.GetAllEmployees();
+        //        var cacheEntryOptions = new MemoryCacheEntryOptions
+        //        {
+        //            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
+        //            SlidingExpiration = TimeSpan.FromSeconds(45),
+        //            Priority = CacheItemPriority.Normal
+        //        };
+        //        _memoryCache.Set(key, Employees, cacheEntryOptions);
+        //    }
+        //    stopwatch.Stop();
+        //    _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
+
+        //    return View(Employees);
+
+
+        //}
         [HttpGet]
         public async Task<IActionResult> EmployeeDetails()
         {
-
-            //Data fetching message from cache or DB
+            // Data fetching message from cache or DB
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            if (_memoryCache.TryGetValue(key, out List<Employee> Employees))
+
+            List<Employee> employees;
+
+            if (_memoryCache.TryGetValue(key, out employees))
             {
                 _logger.Log(LogLevel.Information, "Data fetched from cache");
             }
             else
             {
                 _logger.Log(LogLevel.Information, "Data not fetched from cache");
-                Employees = await _IemployeeRepository.GetAllEmployees();
+                employees = await _IemployeeRepository.GetAllEmployees();
+
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
                     SlidingExpiration = TimeSpan.FromSeconds(45),
                     Priority = CacheItemPriority.Normal
                 };
-                _memoryCache.Set(key, Employees, cacheEntryOptions);
+
+                _memoryCache.Set(key, employees, cacheEntryOptions);
             }
+
             stopwatch.Stop();
             _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
 
-            return View(Employees);
-
+            // Return employees as JSON
+            return Ok(employees);
         }
+
 
         //Cache Clear Method
         public IActionResult ClearCache()

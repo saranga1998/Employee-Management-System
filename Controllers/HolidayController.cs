@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace EMS_Project.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class HolidayController : Controller
     {
    
@@ -27,7 +27,7 @@ namespace EMS_Project.Controllers
 
 
         //Add Holiday Get Method
-        [Authorize]
+        
         [HttpGet]
         public IActionResult AddHoliday()
         {
