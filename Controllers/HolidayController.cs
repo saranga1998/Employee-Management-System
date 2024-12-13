@@ -83,7 +83,8 @@ namespace EMS_Project.Controllers
             stopwatch.Stop();
             _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
 
-            return View(Holidays);
+            //return View(Holidays);
+            return Ok(Holidays);
         }
 
         //Cache Clear Method
