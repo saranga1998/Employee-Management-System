@@ -34,19 +34,26 @@ namespace EMS_Project.Controllers
 
         //Post Method for AddEmployee
         [HttpPost]
-        public async Task<IActionResult> AddEmployee(Employee newEmp)
+        public async Task<IActionResult> AddEmployee([FromBody]Employee newEmp)
         {
+            if (newEmp == null)
+            {
+                return BadRequest("Employee data cannot be null.");
+            }
 
             try
             {
                 await _IemployeeRepository.AddEmployee(newEmp);
-                return RedirectToAction("AddEmployee");
+                _logger.LogInformation("Employee added successfully: {@Employee}", newEmp);
+                //return RedirectToAction("AddEmployee");
+                return CreatedAtAction(nameof(AddEmployee), new { id = newEmp.EmployeeId }, newEmp);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding Employee");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while adding the employee.");
             }
-            return View(newEmp);
+           // return View(newEmp);
 
         }
 
