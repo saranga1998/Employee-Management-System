@@ -134,7 +134,8 @@ namespace EMS_Project.Controllers
 
         }
         //Get Method for DeleteEmployee using EmployeeId
-        [HttpGet]
+        //[HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> DeleteEmployee(string id)
         {
             var result = await _IemployeeRepository.DeleteEmployee(id);
@@ -142,7 +143,8 @@ namespace EMS_Project.Controllers
             {
                 return NotFound();
             }
-            return RedirectToAction("EmployeeDetails");
+            //return RedirectToAction("EmployeeDetails");
+            return Ok();
         }
 
 
