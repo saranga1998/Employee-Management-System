@@ -135,14 +135,15 @@ namespace EMS_Project.Controllers
 
 
         //Post Method for EditEmployee to update the Employee details
-        [HttpPost]
-        public async Task<IActionResult> Edit(Employee employee)
+        //[HttpPost]
+        [HttpPut]
+        public async Task<IActionResult> Edit([FromBody]Employee employee,string id)
         {
             var result = await _IemployeeRepository.UpdateEmployee(employee);
-            if (result)
-            {
-                return RedirectToAction("EmployeeDetails");
-            }
+            //if (result)
+            //{
+            //    return RedirectToAction("EmployeeDetails");
+            //}
             //return View(employee);
             return Ok();
         }
