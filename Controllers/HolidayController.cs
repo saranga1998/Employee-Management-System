@@ -52,7 +52,8 @@ namespace EMS_Project.Controllers
             {
                 _logger.LogError(ex, "Error adding Holiday");
             }
-            return View(holiday);
+           // return View(holiday);
+           return Ok(holiday);
 
         }
 
@@ -97,7 +98,7 @@ namespace EMS_Project.Controllers
         }
 
         //Delete Holiday by ID
-        [HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> DeleteHoliday(int id)
         {
             var result = await _IholidayRepository.DeleteHoliday(id);
@@ -105,7 +106,8 @@ namespace EMS_Project.Controllers
             {
                 return NotFound();
             }
-            return RedirectToAction("HolidayDetails");
+            //return RedirectToAction("HolidayDetails");
+            return Ok();
         }
 
 
@@ -114,17 +116,19 @@ namespace EMS_Project.Controllers
         public async Task<IActionResult> EditHoliday(int id)
         {
             var holiday = await _IholidayRepository.GetHolidayById(id);
-            if (holiday == null)
-            {
-                return NotFound();
-            }
-            return View(holiday);
+            //if (holiday == null)
+            //{
+            //    return NotFound();
+            //}
+            //return View(holiday);
+            return Ok(holiday);
         }
 
 
-        //Edit Holiday Post Method
-        [HttpPost]
-        public async Task<IActionResult> EditHoliday(Holiday holiday)
+        //Edit Holiday Post Method[HttpPost]
+
+        [HttpPut]
+        public async Task<IActionResult> EditHoliday(Holiday holiday,int id)
         {
             try
             {
@@ -135,7 +139,8 @@ namespace EMS_Project.Controllers
             {
                 _logger.LogError(ex, "Error updating Holiday");
             }
-            return View(holiday);
+            //return View(holiday);
+            return Ok(holiday);
         }
     }
 }

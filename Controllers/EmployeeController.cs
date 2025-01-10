@@ -90,6 +90,8 @@ namespace EMS_Project.Controllers
             stopwatch.Stop();
             _logger.Log(LogLevel.Information, "Time taken to fetch data: " + stopwatch.ElapsedMilliseconds);
             //    return View(Employees);
+
+
             // Return employees as JSON
             return Ok(employees);
         }
