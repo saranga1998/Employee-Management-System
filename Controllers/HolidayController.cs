@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace EMS_Project.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HolidayController : Controller
     {
    
@@ -40,20 +40,22 @@ namespace EMS_Project.Controllers
 
         //Add Holiday Post Method
         [HttpPost]
-        public async Task<IActionResult> AddHoliday(Holiday holiday)
+        public async Task<IActionResult> AddHoliday([FromBody]Holiday holiday)
         {
 
             try
             {
                 await _IholidayRepository.AddHoliday(holiday);
-                return RedirectToAction("AddHoliday");
+                //return RedirectToAction("AddHoliday");
+                return Ok();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding Holiday");
+                return BadRequest(ex);
             }
            // return View(holiday);
-           return Ok(holiday);
+           
 
         }
 
@@ -65,7 +67,8 @@ namespace EMS_Project.Controllers
             //Data fetching message from cache or DB
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            if (_memoryCache.TryGetValue(key, out List<Holiday> Holidays))
+            List<Holiday> Holidays;
+            if (_memoryCache.TryGetValue(key, out Holidays))
             {
                 _logger.Log(LogLevel.Information, "Data fetched from cache");
             }
@@ -116,10 +119,10 @@ namespace EMS_Project.Controllers
         public async Task<IActionResult> EditHoliday(int id)
         {
             var holiday = await _IholidayRepository.GetHolidayById(id);
-            //if (holiday == null)
-            //{
-            //    return NotFound();
-            //}
+            if (holiday == null)
+            {
+                return NotFound();
+            }
             //return View(holiday);
             return Ok(holiday);
         }
@@ -128,19 +131,21 @@ namespace EMS_Project.Controllers
         //Edit Holiday Post Method[HttpPost]
 
         [HttpPut]
-        public async Task<IActionResult> EditHoliday(Holiday holiday,int id)
+        public async Task<IActionResult> EditHoliday([FromBody]Holiday holiday,int id)
         {
             try
             {
                 await _IholidayRepository.UpdateHoliday(holiday);
-                return RedirectToAction("HolidayDetails");
+                //return RedirectToAction("HolidayDetails");
+                return Ok();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating Holiday");
+                return BadRequest(ex);
             }
             //return View(holiday);
-            return Ok(holiday);
+            
         }
     }
 }
