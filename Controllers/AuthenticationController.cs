@@ -139,6 +139,14 @@ namespace EMS_Project.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UserProfile()
+        {
+            string UserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            User? user = await _userRepository.GetUserDetails(UserName);
+            return Ok(user);
+        }
+
 
         //Logout
         [Authorize]
