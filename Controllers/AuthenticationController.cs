@@ -138,7 +138,7 @@ namespace EMS_Project.Controllers
             AuthenticatedUserResponse response = await _authenticator.Authenticate(user);
             return Ok(response);
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> UserProfile()
         {
